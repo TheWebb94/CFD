@@ -7,8 +7,8 @@ public class Container : MonoBehaviour
     private void OnDrawGizmos()
     {
         Gizmos.color = Color.green;
-
+        float r = settings.particleSize / 2;
         // Draw centered on THIS object
-        Gizmos.DrawWireCube(transform.position, new Vector2((float)boundsSize.x, (float)boundsSize.y));
+        Gizmos.DrawWireCube(transform.position, new Vector2((float)boundsSize.x - r, (float)boundsSize.y - r));
     }
 }

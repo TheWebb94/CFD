@@ -8,12 +8,13 @@ public class ParticleSpawner : MonoBehaviour
     public Transform particleParent;
     public Container container; 
     public FluidSettings settings;
-    public float spacing = 1.1f; // distance between particles
+    public float spacing; // distance between particles
 
     void Start()
     {
         int gridSize = Mathf.CeilToInt(Mathf.Sqrt(particlesToSpawn));
         int spawned = 0;
+        spacing = settings.particleSize;
 
         Vector2 startOffset = new Vector2(
             -gridSize * spacing * 0.5f,
