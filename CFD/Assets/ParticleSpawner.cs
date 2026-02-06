@@ -8,13 +8,15 @@ public class ParticleSpawner : MonoBehaviour
     public Transform particleParent;
     public Container container; 
     public FluidSettings settings;
-    public float spacing; // distance between particles
+    public float spacing = 0; // distance between particles
+    public ParticleManager particles;
 
     void Start()
     {
         int gridSize = Mathf.CeilToInt(Mathf.Sqrt(particlesToSpawn));
         int spawned = 0;
-        spacing = settings.particleSize;
+        
+        float totalSpacing = spacing + settings.particleSize;
 
         Vector2 startOffset = new Vector2(
             -gridSize * spacing * 0.5f,
@@ -28,7 +30,7 @@ public class ParticleSpawner : MonoBehaviour
                 if (spawned >= particlesToSpawn)
                     return;
 
-                Vector2 pos = startOffset + new Vector2(x * spacing, y * spacing);
+                Vector2 pos = startOffset + new Vector2(x * totalSpacing, y * totalSpacing);
 
                 GameObject obj = Instantiate(
                     particlePrefab,
@@ -37,9 +39,10 @@ public class ParticleSpawner : MonoBehaviour
                     particleParent
                 );
 
-                Particle particle = obj.GetComponent<Particle>();
-                particle.container = container;
-                particle.settings = settings;
+                FluidParticle fluidParticle = obj.GetComponent<FluidParticle>();
+                fluidParticle.container = container;
+                fluidParticle.settings = settings;
+                particles.particleSet.Add(fluidParticle);
                 
                 spawned++;
             }

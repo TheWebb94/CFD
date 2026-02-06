@@ -130,6 +130,7 @@ GameObject:
   - component: {fileID: 69001485}
   - component: {fileID: 69001487}
   - component: {fileID: 69001486}
+  - component: {fileID: 69001488}
   m_Layer: 0
   m_Name: ParticleManager
   m_TagString: Untagged
@@ -169,7 +170,8 @@ MonoBehaviour:
   particleParent: {fileID: 1407614236}
   container: {fileID: 1407614235}
   settings: {fileID: 69001487}
-  spacing: 1.1
+  spacing: 0
+  particles: {fileID: 69001488}
 --- !u!114 &69001487
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -185,7 +187,19 @@ MonoBehaviour:
   gravity: 9.81
   collisionDamping: 0.9
   particleSize: 1
-  version: 19
+  version: 27
+--- !u!114 &69001488
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 69001484}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: db6e0904b9743354984ed9340705253c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: '::'
 --- !u!1 &519420028
 GameObject:
   m_ObjectHideFlags: 0
