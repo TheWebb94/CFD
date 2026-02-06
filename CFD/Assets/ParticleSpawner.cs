@@ -2,28 +2,46 @@ using UnityEngine;
 
 public class ParticleSpawner : MonoBehaviour
 {
-
-    public float particlesToSpawn;
+    [Header("Container Configuration")]
+    public int particlesToSpawn = 100;
     public GameObject particlePrefab;
-
     public Transform particleParent;
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
+    public Container container; 
+    public FluidSettings settings;
+    public float spacing = 1.1f; // distance between particles
+
     void Start()
     {
-        float particleGridDimensions = Mathf.Sqrt(particlesToSpawn);
+        int gridSize = Mathf.CeilToInt(Mathf.Sqrt(particlesToSpawn));
+        int spawned = 0;
 
-        for (int x = 0; x < particlesToSpawn; x++)
+        Vector2 startOffset = new Vector2(
+            -gridSize * spacing * 0.5f,
+            -gridSize * spacing * 0.5f
+        );
+
+        for (int x = 0; x < gridSize; x++)
         {
-            for (int y = 0; y < particlesToSpawn; y++)
+            for (int y = 0; y < gridSize; y++)
             {
-                Instantiate(particlePrefab, new Vector3(x, y, 0), Quaternion.identity, transform);
+                if (spawned >= particlesToSpawn)
+                    return;
+
+                Vector2 pos = startOffset + new Vector2(x * spacing, y * spacing);
+
+                GameObject obj = Instantiate(
+                    particlePrefab,
+                    pos,
+                    Quaternion.identity,
+                    particleParent
+                );
+
+                Particle particle = obj.GetComponent<Particle>();
+                particle.container = container;
+                particle.settings = settings;
+                
+                spawned++;
             }
         }
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
     }
 }
