@@ -1,6 +1,3 @@
-using System;
-using System.ComponentModel;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class FluidParticle : MonoBehaviour
@@ -78,7 +75,7 @@ public class FluidParticle : MonoBehaviour
         if (position.x < -halfBoundsSize.x + r)
         {
             position.x = -halfBoundsSize.x + r;
-            velocity.x = velocity.x * collisionDamping;
+            velocity.x = -velocity.x * collisionDamping;
         }
         
         if (position.y < -halfBoundsSize.y + r)
@@ -89,7 +86,7 @@ public class FluidParticle : MonoBehaviour
         if (position.y > halfBoundsSize.y - r)
         {
             position.y = halfBoundsSize.y - r;
-            velocity.y = velocity.y * collisionDamping;
+            velocity.y = -velocity.y * collisionDamping;
         }
     }
 }

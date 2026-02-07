@@ -7,7 +7,7 @@ public class ParticleManager : MonoBehaviour
 
 
 
-  public float particleCount;
+  public int particleCount;
 
   void Update()
   {

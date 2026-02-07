@@ -186,8 +186,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::FluidSettings
   gravity: 9.81
   collisionDamping: 0.9
-  particleSize: 1
-  version: 27
+  particleSize: 1.96
+  smoothingFactor: 4
+  version: 104
 --- !u!114 &69001488
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -200,6 +201,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: db6e0904b9743354984ed9340705253c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: '::'
+  particleCount: 0
 --- !u!1 &519420028
 GameObject:
   m_ObjectHideFlags: 0
