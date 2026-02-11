@@ -1,3 +1,4 @@
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class FluidParticle : MonoBehaviour
@@ -11,12 +12,15 @@ public class FluidParticle : MonoBehaviour
     public FluidSettings settings;
     private int lastSettingsVersion = -1;
     public Container container;
-
+    private Vector2 pressure;
+    private float density;
+    private ParticleManager particleManager;
 
     private void Start()
     {
         position = transform.position;
         ApplySettingsIfChanged();
+        particleManager = FindAnyObjectByType(typeof(ParticleManager)) as ParticleManager;
     }
     
     void Update()
@@ -39,6 +43,16 @@ public class FluidParticle : MonoBehaviour
         KeepInContainer();
         
         transform.position = position;
+
+        FindDensity();
+    }
+
+    private void FindDensity()
+    {
+       foreach (FluidParticle particle in particleManager.particleSet)
+       {
+           //compare positions of all particles
+       }
     }
 
     static float SmoothingKernel(float radius, float dist)

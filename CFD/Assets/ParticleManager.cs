@@ -3,14 +3,14 @@ using UnityEngine;
 
 public class ParticleManager : MonoBehaviour
 {
-  public HashSet<FluidParticle>  particleSet = new HashSet<FluidParticle>();
+    public HashSet<FluidParticle>  particleSet = new HashSet<FluidParticle>();
 
 
 
-  public int particleCount;
+    public int particleCount;
 
-  void Update()
-  {
-    particleCount = particleSet.Count;
-  }
+    void Update()
+    {
+        particleCount = particleSet.Count;
+    }
 }
