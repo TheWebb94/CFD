@@ -4,7 +4,7 @@
 PlayerSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 28
-  productGUID: c9226835fd4302c45b763a0b05ab1437
+  productGUID: 3fcc0ed782ece4f4ea1c9903b53c2fcb
   AndroidProfiler: 0
   AndroidFilterTouchesWhenObscured: 0
   AndroidEnableSustainedPerformanceMode: 0
@@ -13,7 +13,7 @@ PlayerSettings:
   useOnDemandResources: 0
   accelerometerFrequency: 60
   companyName: DefaultCompany
-  productName: CFD Model
+  productName: Fluid Simulation
   defaultCursor: {fileID: 0}
   cursorHotspot: {x: 0, y: 0}
   m_SplashScreenBackgroundColor: {r: 0.13725491, g: 0.12156863, b: 0.1254902, a: 1}
@@ -596,14 +596,14 @@ PlayerSettings:
   editorAssembliesCompatibilityLevel: 1
   m_RenderingPath: 1
   m_MobileRenderingPath: 1
-  metroPackageName: CFD Model
+  metroPackageName: Fluid Simulation
   metroPackageVersion: 
   metroCertificatePath: 
   metroCertificatePassword: 
   metroCertificateSubject: 
   metroCertificateIssuer: 
   metroCertificateNotAfter: 0000000000000000
-  metroApplicationDescription: CFD Model
+  metroApplicationDescription: Fluid Simulation
   wsaImages: {}
   metroTileShortName: 
   metroTileShowName: 0
@@ -674,10 +674,10 @@ PlayerSettings:
   captureStartupLogs: {}
   activeInputHandler: 2
   windowsGamepadBackendHint: 0
-  cloudProjectId: e7acae17-f9f9-45b7-857f-43101e3116e8
+  cloudProjectId: 83b33065-d68d-43fd-92d3-91530d272719
   framebufferDepthMemorylessMode: 0
   qualitySettingsNames: []
-  projectName: CFD Model
+  projectName: Fluid Simulation 2026-02-13_15-00-16
   organizationId: thewebb94
   cloudEnabled: 0
   legacyClampBlendShapeWeights: 0
