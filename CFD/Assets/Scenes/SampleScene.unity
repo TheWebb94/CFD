@@ -369,7 +369,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 98b67b39f9e9d4544a90b9601e8457e3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  boundsSize: {x: 30, y: 20}
+  boundsSize: {x: 23.12, y: 22.8}
   fluidSimulation: {fileID: 2082598347}
 --- !u!4 &784620056
 Transform:
@@ -444,14 +444,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   particleSize: 0.5
-  numOfParticles: 500
+  numOfParticles: 700
   gravity: 3
   mass: 1
   collisionDamping: 0.5
   spacing: 0.1
-  smoothingRadius: 10
-  targetDensity: 1.25
-  pressureMultiplier: 500
+  smoothingRadius: 7.5
+  targetDensity: 0.7
+  pressureMultiplier: 100
   particlesTransform: {fileID: 784620056}
   particlePrefab: {fileID: 2115233690990384601, guid: 36e3bff0073f5de45ad9844e7e916f76, type: 3}
   container: {fileID: 784620055}
