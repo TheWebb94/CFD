@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class FluidSimulation : MonoBehaviour
@@ -11,6 +12,8 @@ public class FluidSimulation : MonoBehaviour
     public float collisionDamping = 0.9f;
     public float spacing = 0f;
     public float smoothingRadius;
+    public float targetDensity = 1;
+    public float pressureMultiplier = 1f;
   
    private HashSet<Particle> particles = new HashSet<Particle>();
     public  Transform particlesTransform;
@@ -33,7 +36,7 @@ public class FluidSimulation : MonoBehaviour
        {
            for (int y = 0; y < gridDimensions && spawned < numOfParticles; y++)
            {
-               Vector2 pos = new Vector2(x * step, y * step);
+               Vector2 pos = new Vector2((x * step) - container.boundsSize.x / 2, y * step);
                           
                GameObject obj = Instantiate(particlePrefab, pos, particlesTransform.rotation, particlesTransform);
                
@@ -50,7 +53,29 @@ public class FluidSimulation : MonoBehaviour
            }
        }
     }
+    
+    // Update is called once per frame
+    void Update()
+    {
+        // --- Pass 1: compute density for every particle ---
+        foreach (Particle particle in particles)
+        {
+            particle.density = CalculateDensity(particle.position);
+        }
 
+        // --- Pass 2: pressure + gravity → velocity → position ---
+        foreach (Particle particle in particles)
+        {
+            Vector2 pressureForce = CalculatePressureForce(particle);
+            Vector2 pressureAcceleration = pressureForce / particle.density;
+
+            particle.velocity += (Vector2.down * gravity + pressureAcceleration) * Time.deltaTime;
+            particle.position += particle.velocity * Time.deltaTime;
+
+            KeepInContainer(ref particle.position, ref particle.velocity);
+            particle.transform.position = particle.position;
+        }
+    }
     /// <summary>
     /// Function that determines the influence on pressure of nearby particles
     /// </summary>
@@ -70,7 +95,8 @@ public class FluidSimulation : MonoBehaviour
         if (d >= r) return 0;
 
         float f = r * r - d * d;
-        float scale = -24 / Mathf.PI * Mathf.Pow(r, 8);
+        float scale = -24 / (Mathf.PI * Mathf.Pow(r, 8));
+
         return scale * d * f * f;
     }
 
@@ -107,37 +133,36 @@ public class FluidSimulation : MonoBehaviour
     }
     */
 
-    Vector2 CalculatePressureMagnitude(Vector2 position)
+    Vector2 CalculatePressureForce(Particle sampleParticle)
     {
-        Vector2 pressureMagnitude = Vector2.zero;
+        Vector2 pressureForce = Vector2.zero;
 
         foreach (var particle in particles)
         {
-            float distance = (particle.position - position).magnitude;
-            Vector2 dir = (particle.position - position) / distance;
-            float influence = SmoothingKernel(smoothingRadius, distance);
-            float density = CalculateDensity(particle.position);
-            pressureMagnitude += -particle.density * dir * influence * mass / density;
+            if (particle == sampleParticle) continue;  // skip self
+
+            float distance = (particle.position - sampleParticle.position).magnitude;
+            if (distance == 0f) continue;  // safety
+
+            Vector2 dir = (particle.position - sampleParticle.position) / distance;
+            float slope = SmoothingKernelDerivative(smoothingRadius, distance);
+
+            float sharedPressure = (DensityToPressure(particle.density)
+                                    + DensityToPressure(sampleParticle.density)) / 2f;
+
+            pressureForce += sharedPressure * dir * slope * mass / particle.density;
         }
-        
-        return pressureMagnitude;
+
+        return pressureForce;
     }
 
-    // Update is called once per frame
-    void Update()
+    float DensityToPressure(float density)
     {
-        
-        //loop through all particles and update pos and vel
-        foreach (Particle particle in particles)
-        {
-            particle.velocity += Vector2.down * gravity * Time.deltaTime;
-            particle.position += particle.velocity * Time.deltaTime;
-            
-            KeepInContainer(ref particle.position, ref particle.velocity);
-            
-            particle.transform.position = particle.position;
-        }
+        return pressureMultiplier * (density - targetDensity);
     }
+
+
+
     
     void KeepInContainer(ref Vector2 pos, ref Vector2 vel)
     {
