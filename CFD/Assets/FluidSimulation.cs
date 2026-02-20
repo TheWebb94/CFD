@@ -11,6 +11,10 @@ public class FluidSimulation : MonoBehaviour
     public float mass = 1f;
     [Range(0,1)] public float spacing = 0f;
     
+    [Header("Colour")]
+    public Gradient speedGradient;
+    public float maxSpeed = 10f;
+    
     [Header("Particle Interactions")]
     [Range(0,1)] public float collisionDamping = 0.9f; // efficiencyy of collision bounces (1 = perfect elasticity, 0 = all momentum lost)
     [Range(1,3)] public float smoothingRadius; // radiuus of influence for nearby particles
@@ -20,6 +24,9 @@ public class FluidSimulation : MonoBehaviour
     public float surfaceTensionStrength = 0.1f;
     public float surfaceNormalThreshold = 0.1f;
     
+    [Header("Mouse Interaction")]
+    public float mouseInteractionRadius = 2f;
+    public float mouseInteractionStrength = 5f;
     
     [Header("Setup")]
     public  Transform particlesTransform;
@@ -86,7 +93,32 @@ public class FluidSimulation : MonoBehaviour
 
             KeepInContainer(ref particle.position, ref particle.velocity);
             particle.transform.position = particle.position;
+            
+            ColourParticle(particle);   //colours the particle based on velocity for easier visualisation
         }
+        
+        // --- Pass 3: mouse interaction ---
+        bool attract = Input.GetMouseButton(0);  // left click = pull in
+        bool repel   = Input.GetMouseButton(1);  // right click = push out
+
+        if (attract || repel)
+        {
+            Vector2 mouseWorld = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            
+            float strength;
+
+            if (attract)
+            {
+                strength = mouseInteractionStrength;
+            }
+            else
+            {
+                strength = -mouseInteractionStrength;
+            }
+            
+            ApplyMouseForce(mouseWorld, strength);
+        }
+
     }
     /// <summary>
     /// Function that determines the influence on pressure of nearby particles
@@ -200,14 +232,37 @@ public class FluidSimulation : MonoBehaviour
     {
         return pressureMultiplier * (density - targetDensity);
     }
+    
+    void ColourParticle(Particle p)
+    {
+        float t = Mathf.Clamp01(p.velocity.magnitude / maxSpeed);
+        p.sr.color = speedGradient.Evaluate(t);
+    }
 
-// Laplacian of the poly6 color field: used to compute surface curvature
-// Formula: (45 / (π * r^6)) * (r - d)
+
+    // Laplacian of the poly6 color field: used to compute surface curvature
+    // Formula: (45 / (π * r^6)) * (r - d)
     float SurfaceTensionLaplacian(float r, float d)
     {
         if (d >= r) return 0;
         return (45f / (Mathf.PI * Mathf.Pow(r, 6))) * (r - d);
     }
+    
+    void ApplyMouseForce(Vector2 mousePos, float strength)
+    {
+        foreach (Particle particle in particles)
+        {
+            Vector2 offset = mousePos - particle.position;
+            float distance = offset.magnitude;
+            if (distance >= mouseInteractionRadius || distance == 0f) continue;
+
+            // Linear falloff: full strength at centre, zero at edge
+            float t = 1f - (distance / mouseInteractionRadius);
+            Vector2 dir = offset / distance;
+            particle.velocity += dir * strength * t * Time.deltaTime;
+        }
+    }
+
 
 // Müller 2003: surface tension via color field gradient (normal) and Laplacian (curvature)
 // Force = -σ * κ * n̂, only applied at the surface where |n| exceeds threshold

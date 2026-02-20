@@ -225,7 +225,7 @@ Camera:
   far clip plane: 1000
   field of view: 34
   orthographic: 1
-  orthographic size: 22.23
+  orthographic size: 12.27
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -369,7 +369,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 98b67b39f9e9d4544a90b9601e8457e3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  boundsSize: {x: 23.12, y: 22.8}
+  boundsSize: {x: 24.5, y: 22.4}
   fluidSimulation: {fileID: 2082598347}
 --- !u!4 &784620056
 Transform:
@@ -443,15 +443,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cfc34209b6acbc9468ed1cfb7a5c8e94, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  particleSize: 0.5
-  numOfParticles: 700
-  gravity: 3
+  particleSize: 0.31
+  numOfParticles: 500
+  gravity: 9.23
   mass: 1
-  collisionDamping: 0.5
-  spacing: 0.1
-  smoothingRadius: 7.5
+  spacing: 1
+  collisionDamping: 0.9
+  smoothingRadius: 2
   targetDensity: 0.7
-  pressureMultiplier: 100
+  pressureMultiplier: 50
+  viscosityStrength: 0.3
+  surfaceTensionStrength: 0.1
+  surfaceNormalThreshold: 0.1
+  mouseInteractionRadius: 2
+  mouseInteractionStrength: 200
   particlesTransform: {fileID: 784620056}
   particlePrefab: {fileID: 2115233690990384601, guid: 36e3bff0073f5de45ad9844e7e916f76, type: 3}
   container: {fileID: 784620055}
