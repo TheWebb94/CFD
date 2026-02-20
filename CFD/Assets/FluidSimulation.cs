@@ -5,24 +5,28 @@ using UnityEngine;
 public class FluidSimulation : MonoBehaviour
 {
     [Header("Particle Settings")] 
-    public float particleSize = 1f;
+    [Range(0.05f,1)] public float particleSize = 1f;
     public int numOfParticles;
-    public float gravity = 9.81f;
+    [Range(0,20)] public float gravity = 9.81f;
     public float mass = 1f;
-    public float collisionDamping = 0.9f;
-    public float spacing = 0f;
-    public float smoothingRadius;
+    [Range(0,1)] public float spacing = 0f;
+    
+    [Header("Particle Interactions")]
+    [Range(0,1)] public float collisionDamping = 0.9f; // efficiencyy of collision bounces (1 = perfect elasticity, 0 = all momentum lost)
+    [Range(1,3)] public float smoothingRadius; // radiuus of influence for nearby particles
     public float targetDensity = 1;
-    public float pressureMultiplier = 1f;
-
-    [Header("Viscosity")] public float viscosityStrength = 0.1f; // 0 = gas-like,  0.1 = water-like, 0.5+ syrup-y
-  
-   private HashSet<Particle> particles = new HashSet<Particle>();
+    public float pressureMultiplier = 1f; //stronger forces creates a strongeer pressure field, higher numbers are currently causing pooling at the container bounds
+    [Range(0,3)] public float viscosityStrength = 0.1f; // 0 = gas-like,  0.1 = water-like, 0.5+ syrup-y
+    public float surfaceTensionStrength = 0.1f;
+    public float surfaceNormalThreshold = 0.1f;
+    
+    
+    [Header("Setup")]
     public  Transform particlesTransform;
     public GameObject particlePrefab;
-
     public Container container;
     
+    private HashSet<Particle> particles = new HashSet<Particle>();
     
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -74,7 +78,10 @@ public class FluidSimulation : MonoBehaviour
             Vector2 viscosityForce = CalculateViscosityForce(particle);
             Vector2 viscosityAcceleration = viscosityForce / particle.density;
             
-            particle.velocity += (Vector2.down * gravity + pressureAcceleration + viscosityAcceleration) * Time.deltaTime;
+            Vector2 surfaceTensionForce = CalculateSurfaceTensionForce(particle);
+            Vector2 surfaceTensionAcceleration = surfaceTensionForce / particle.density;
+            
+            particle.velocity += (Vector2.down * gravity + pressureAcceleration + viscosityAcceleration + surfaceTensionAcceleration) * Time.deltaTime;
             particle.position += particle.velocity * Time.deltaTime;
 
             KeepInContainer(ref particle.position, ref particle.velocity);
@@ -194,6 +201,43 @@ public class FluidSimulation : MonoBehaviour
         return pressureMultiplier * (density - targetDensity);
     }
 
+// Laplacian of the poly6 color field: used to compute surface curvature
+// Formula: (45 / (π * r^6)) * (r - d)
+    float SurfaceTensionLaplacian(float r, float d)
+    {
+        if (d >= r) return 0;
+        return (45f / (Mathf.PI * Mathf.Pow(r, 6))) * (r - d);
+    }
+
+// Müller 2003: surface tension via color field gradient (normal) and Laplacian (curvature)
+// Force = -σ * κ * n̂, only applied at the surface where |n| exceeds threshold
+    Vector2 CalculateSurfaceTensionForce(Particle sampleParticle)
+    {
+        Vector2 normal = Vector2.zero;
+        float curvature = 0f;
+
+        foreach (var particle in particles)
+        {
+            if (particle == sampleParticle) continue;
+
+            float distance = (particle.position - sampleParticle.position).magnitude;
+            if (distance == 0f || distance >= smoothingRadius) continue;
+
+            Vector2 dir = (particle.position - sampleParticle.position) / distance;
+            float weight = mass / particle.density;
+
+            // color field gradient → surface normal
+            normal += weight * SmoothingKernelDerivative(smoothingRadius, distance) * dir;
+
+            // color field Laplacian → curvature
+            curvature -= weight * SurfaceTensionLaplacian(smoothingRadius, distance);
+        }
+
+        // Only apply at the surface; interior particles have near-zero normals
+        if (normal.magnitude < surfaceNormalThreshold) return Vector2.zero;
+
+        return -surfaceTensionStrength * curvature * normal.normalized;
+    }
 
 
     
