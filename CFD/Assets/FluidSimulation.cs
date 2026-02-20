@@ -14,6 +14,10 @@ public class FluidSimulation : MonoBehaviour
     public float smoothingRadius;
     public float targetDensity = 1;
     public float pressureMultiplier = 1f;
+
+    [Header("Boundary")]
+    public float boundaryRepulsion = 150f;
+    public float boundaryRepulsionDist = 1.5f;
   
    private HashSet<Particle> particles = new HashSet<Particle>();
     public  Transform particlesTransform;
@@ -68,8 +72,9 @@ public class FluidSimulation : MonoBehaviour
         {
             Vector2 pressureForce = CalculatePressureForce(particle);
             Vector2 pressureAcceleration = pressureForce / particle.density;
+            Vector2 boundaryForce = BoundaryRepulsionForce(particle.position);
 
-            particle.velocity += (Vector2.down * gravity + pressureAcceleration) * Time.deltaTime;
+            particle.velocity += (Vector2.down * gravity + pressureAcceleration + boundaryForce) * Time.deltaTime;
             particle.position += particle.velocity * Time.deltaTime;
 
             KeepInContainer(ref particle.position, ref particle.velocity);
@@ -164,6 +169,30 @@ public class FluidSimulation : MonoBehaviour
 
 
     
+    Vector2 BoundaryRepulsionForce(Vector2 pos)
+    {
+        Vector2 force = Vector2.zero;
+        Vector2 half = container.boundsSize / 2 - Vector2.one * particleSize;
+
+        float lx = pos.x - (-half.x);
+        if (lx < boundaryRepulsionDist)
+            force.x += boundaryRepulsion * (1f - lx / boundaryRepulsionDist);
+
+        float rx = half.x - pos.x;
+        if (rx < boundaryRepulsionDist)
+            force.x -= boundaryRepulsion * (1f - rx / boundaryRepulsionDist);
+
+        float by = pos.y - (-half.y);
+        if (by < boundaryRepulsionDist)
+            force.y += boundaryRepulsion * (1f - by / boundaryRepulsionDist);
+
+        float ty = half.y - pos.y;
+        if (ty < boundaryRepulsionDist)
+            force.y -= boundaryRepulsion * (1f - ty / boundaryRepulsionDist);
+
+        return force;
+    }
+
     void KeepInContainer(ref Vector2 pos, ref Vector2 vel)
     {
         
