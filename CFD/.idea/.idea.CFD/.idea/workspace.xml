@@ -5,6 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="720c9bda-a598-4eaa-ac8b-c5d9920dcdcc" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.CFD/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.CFD/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/FluidSimulation.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/FluidSimulation.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -89,7 +90,7 @@
       <option name="presentableId" value="Default" />
       <updated>1771015214462</updated>
       <workItem from="1771015216282" duration="22000" />
-      <workItem from="1771015326034" duration="1206000" />
+      <workItem from="1771015326034" duration="5853000" />
     </task>
     <servers />
   </component>

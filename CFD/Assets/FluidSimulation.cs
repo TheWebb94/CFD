@@ -14,6 +14,8 @@ public class FluidSimulation : MonoBehaviour
     public float smoothingRadius;
     public float targetDensity = 1;
     public float pressureMultiplier = 1f;
+
+    [Header("Viscosity")] public float viscosityStrength = 0.1f; // 0 = gas-like,  0.1 = water-like, 0.5+ syrup-y
   
    private HashSet<Particle> particles = new HashSet<Particle>();
     public  Transform particlesTransform;
@@ -63,13 +65,16 @@ public class FluidSimulation : MonoBehaviour
             particle.density = CalculateDensity(particle.position);
         }
 
-        // --- Pass 2: pressure + gravity → velocity → position ---
+        // --- Pass 2: pressure + viscosityy + gravity → velocity → position ---
         foreach (Particle particle in particles)
         {
             Vector2 pressureForce = CalculatePressureForce(particle);
             Vector2 pressureAcceleration = pressureForce / particle.density;
 
-            particle.velocity += (Vector2.down * gravity + pressureAcceleration) * Time.deltaTime;
+            Vector2 viscosityForce = CalculateViscosityForce(particle);
+            Vector2 viscosityAcceleration = viscosityForce / particle.density;
+            
+            particle.velocity += (Vector2.down * gravity + pressureAcceleration + viscosityAcceleration) * Time.deltaTime;
             particle.position += particle.velocity * Time.deltaTime;
 
             KeepInContainer(ref particle.position, ref particle.velocity);
@@ -88,6 +93,34 @@ public class FluidSimulation : MonoBehaviour
         float value = Mathf.Max(0, r * r - d * d);
 
         return value * value * value / volume;
+    }
+    
+    private static float ViscosityKernelLaplacian(float r, float d)
+    {
+        if (d >= r) return 0;
+
+        return (45f / (Mathf.PI * Mathf.Pow(r, 6))) * (r - d);
+    }
+
+    
+    Vector2 CalculateViscosityForce(Particle sampleParticle)
+    {
+        Vector2 viscosityForce = Vector2.zero;
+
+        foreach (var particle in particles)
+        {
+            if (particle == sampleParticle) continue;
+
+            float distance = (particle.position - sampleParticle.position).magnitude;
+            float influence = ViscosityKernelLaplacian(smoothingRadius, distance);
+
+            // https://matthias-research.github.io/pages/publications/sca03.pdf - viscosity header - vel forces are only dependent on vel DIFFERENCES not absolute vel 
+            viscosityForce += mass * (particle.velocity - sampleParticle.velocity)
+                / particle.density * influence;
+            //particle is accellereated on aveerage vel of its local environment
+        }
+
+        return viscosityStrength * viscosityForce;
     }
 
     static float SmoothingKernelDerivative(float r, float d)
