@@ -443,23 +443,56 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cfc34209b6acbc9468ed1cfb7a5c8e94, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  particleSize: 0.31
+  particleSize: 0.25
   numOfParticles: 500
-  gravity: 9.23
+  gravity: 4.09
   mass: 1
-  spacing: 1
-  collisionDamping: 0.9
+  spacing: 0.5
+  speedGradient:
+    serializedVersion: 2
+    key0: {r: 0, g: 0.9591894, b: 1, a: 1}
+    key1: {r: 1, g: 0.028301716, b: 0.028301716, a: 1}
+    key2: {r: 0, g: 0, b: 0, a: 1}
+    key3: {r: 0, g: 0, b: 0, a: 0}
+    key4: {r: 0, g: 0, b: 0, a: 0}
+    key5: {r: 0, g: 0, b: 0, a: 0}
+    key6: {r: 0, g: 0, b: 0, a: 0}
+    key7: {r: 0, g: 0, b: 0, a: 0}
+    ctime0: 0
+    ctime1: 65535
+    ctime2: 0
+    ctime3: 0
+    ctime4: 0
+    ctime5: 0
+    ctime6: 0
+    ctime7: 0
+    atime0: 0
+    atime1: 64507
+    atime2: 65535
+    atime3: 0
+    atime4: 0
+    atime5: 0
+    atime6: 0
+    atime7: 0
+    m_Mode: 2
+    m_ColorSpace: -1
+    m_NumColorKeys: 2
+    m_NumAlphaKeys: 3
+  maxSpeed: 10
+  collisionDamping: 0.7
   smoothingRadius: 2
-  targetDensity: 0.7
-  pressureMultiplier: 50
-  viscosityStrength: 0.3
+  targetDensity: 1
+  pressureMultiplier: 100
+  viscosityStrength: 0.25
   surfaceTensionStrength: 0.1
   surfaceNormalThreshold: 0.1
-  mouseInteractionRadius: 2
-  mouseInteractionStrength: 200
+  mouseInteractionRadius: 4
+  mouseInteractionStrength: 20
   particlesTransform: {fileID: 784620056}
   particlePrefab: {fileID: 2115233690990384601, guid: 36e3bff0073f5de45ad9844e7e916f76, type: 3}
   container: {fileID: 784620055}
+  boundaryRepulsion: 20
+  boundaryRepulsionDist: 1.5
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
