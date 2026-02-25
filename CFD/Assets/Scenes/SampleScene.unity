@@ -225,7 +225,7 @@ Camera:
   far clip plane: 1000
   field of view: 34
   orthographic: 1
-  orthographic size: 12.27
+  orthographic size: 25
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -369,7 +369,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 98b67b39f9e9d4544a90b9601e8457e3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  boundsSize: {x: 24.5, y: 22.4}
+  boundsSize: {x: 40, y: 22.4}
   fluidSimulation: {fileID: 2082598347}
 --- !u!4 &784620056
 Transform:
@@ -443,9 +443,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cfc34209b6acbc9468ed1cfb7a5c8e94, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  particleSize: 0.25
+  particleSize: 0.3
   numOfParticles: 500
-  gravity: 4.09
+  gravity: 10
   mass: 1
   spacing: 0.5
   speedGradient:
@@ -480,18 +480,18 @@ MonoBehaviour:
     m_NumAlphaKeys: 3
   maxSpeed: 10
   collisionDamping: 0.7
-  smoothingRadius: 2
+  smoothingRadius: 3
   targetDensity: 1
   pressureMultiplier: 100
-  viscosityStrength: 0.25
-  surfaceTensionStrength: 0.1
+  viscosityStrength: 0.3
+  surfaceTensionStrength: 0.3
   surfaceNormalThreshold: 0.1
-  mouseInteractionRadius: 4
+  mouseInteractionRadius: 9.49
   mouseInteractionStrength: 20
   particlesTransform: {fileID: 784620056}
   particlePrefab: {fileID: 2115233690990384601, guid: 36e3bff0073f5de45ad9844e7e916f76, type: 3}
   container: {fileID: 784620055}
-  boundaryRepulsion: 20
+  boundaryRepulsion: 40
   boundaryRepulsionDist: 1.5
 --- !u!1660057539 &9223372036854775807
 SceneRoots:

@@ -17,7 +17,7 @@ public class FluidSimulation : MonoBehaviour
     
     [Header("Particle Interactions")]
     [Range(0,1)] public float collisionDamping = 0.9f; // efficiencyy of collision bounces (1 = perfect elasticity, 0 = all momentum lost)
-    [Range(1,3)] public float smoothingRadius; // radiuus of influence for nearby particles
+    [Range(1,5)] public float smoothingRadius; // radiuus of influence for nearby particles
     public float targetDensity = 1;
     public float pressureMultiplier = 1f; //stronger forces creates a strongeer pressure field, higher numbers are currently causing pooling at the container bounds
     [Range(0,3)] public float viscosityStrength = 0.1f; // 0 = gas-like,  0.1 = water-like, 0.5+ syrup-y
@@ -67,7 +67,7 @@ public class FluidSimulation : MonoBehaviour
                
                particles.Add(p); //add to hashset for tracking and updating later
                
-               spawned++; //++
+               spawned++; //++// 
            }
        }
     }
@@ -252,20 +252,20 @@ public class FluidSimulation : MonoBehaviour
 
         float lx = pos.x - (-half.x);
         if (lx < boundaryRepulsionDist)
-            force.x += boundaryRepulsion * (1f - lx / boundaryRepulsionDist);
+            force.x += boundaryRepulsion * (1f - lx / boundaryRepulsionDist) / 2;
 
         float rx = half.x - pos.x;
         if (rx < boundaryRepulsionDist)
-            force.x -= boundaryRepulsion * (1f - rx / boundaryRepulsionDist);
+            force.x -= boundaryRepulsion * (1f - rx / boundaryRepulsionDist) / 2;
 
-       // float by = pos.y - (-half.y);
-       // if (by < boundaryRepulsionDist)
-       //     force.y += boundaryRepulsion * (1f - by / boundaryRepulsionDist);
-       //
-       // float ty = half.y - pos.y;
-       // if (ty < boundaryRepulsionDist)
-       //     force.y -= boundaryRepulsion * (1f - ty / boundaryRepulsionDist);
-       //
+        float by = pos.y - (-half.y);
+        if (by < boundaryRepulsionDist)
+            force.y += boundaryRepulsion * (1f - by / boundaryRepulsionDist);
+       
+        float ty = half.y - pos.y;
+        if (ty < boundaryRepulsionDist)
+            force.y -= boundaryRepulsion * (1f - ty / boundaryRepulsionDist);
+       
         return force;
     }
 
